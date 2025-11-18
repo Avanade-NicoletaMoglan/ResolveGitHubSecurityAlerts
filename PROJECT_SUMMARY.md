@@ -1,0 +1,276 @@
+# Project Summary - ContosoOrderProcessor Security Lab
+
+## What Was Created
+
+A comprehensive e-commerce order processing application that's designed to help train developers on identifying and resolving GitHub Secret Scanning alerts using GitHub Copilot.
+
+## Project Structure
+
+### Core Application Files
+
+```plaintext
+ContosoOrderProcessor/
+├── Configuration/
+│   └── AppConfig.cs                    # Application config with exposed AWS, Azure, Twilio, JWT secrets
+├── Models/
+│   ├── Customer.cs                     # Customer entity model
+│   └── Order.cs                        # Order and OrderItem models
+├── Security/
+│   └── SecurityValidator.cs            # Security validation, input sanitization, fraud detection
+├── Services/
+│   ├── DatabaseService.cs              # Database operations with exposed SQL connection string
+│   ├── EmailService.cs                 # Email notifications with exposed SendGrid and SMTP credentials
+│   └── PaymentService.cs               # Payment processing with exposed Stripe and PayPal keys
+└── Program.cs                          # Main application orchestrating complete order workflow
+```
+
+### Documentation Files
+
+- **README.md** - Comprehensive project overview and setup instructions
+- **EXPOSED_SECRETS_REFERENCE.md** - Reference guide listing all intentional vulnerabilities
+- **SECURITY.md** - Security policy (existing)
+- **LICENSE-CODE** - License information (existing)
+
+## Key Features
+
+### Realistic E-commerce Workflow
+
+The application simulates a complete order processing system:
+
+1. **Configuration Management** - App settings and feature flags
+2. **Customer Management** - Customer data retrieval and validation
+3. **Order Processing** - Multi-item order creation and validation
+4. **Security Checks** - Input validation, fraud detection, security assessment
+5. **Payment Processing** - Stripe and PayPal integration (simulated)
+6. **Database Operations** - Order persistence and transaction logging (simulated)
+7. **Email Notifications** - SendGrid and SMTP email delivery (simulated)
+8. **Order Tracking** - Status updates and shipping notifications
+
+### Intentional Security Vulnerabilities
+
+**Currently Exposed: 9 types of secrets** across 3 files for training purposes:
+
+1. Stripe Live API key (Critical) - PaymentService.cs
+2. Square Access Token (Critical) - PaymentService.cs
+3. Mailgun API key (High) - EmailService.cs
+4. SMTP server credentials (High) - EmailService.cs
+5. Twilio Account SID and Auth Token (High) - AppConfig.cs
+6. Slack Bot Token (High) - AppConfig.cs
+7. Slack Incoming Webhook URL (High) - AppConfig.cs
+8. JWT secret key (Medium) - AppConfig.cs
+9. Encryption keys and IV (Medium) - AppConfig.cs
+
+**Already Refactored to Environment Variables (7 types):**
+
+1. ✓ AWS Access Key ID and Secret Access Key
+2. ✓ SendGrid API key
+3. ✓ PayPal Client ID and Secret
+4. ✓ SQL Server connection string
+5. ✓ GitHub Personal Access Token
+6. ✓ npm Token
+7. ✓ Azure Storage Connection String
+
+All secrets are **fictional** and created specifically for training.
+
+### Production-Quality Code
+
+Despite being a training project, the code follows best practices:
+
+- ✓ Proper namespace organization
+- ✓ Clear separation of concerns
+- ✓ Well-documented classes and methods
+- ✓ Meaningful variable and method names
+- ✓ Error handling and logging
+- ✓ Input validation and sanitization
+- ✓ Verifiable, consistent output
+- ✓ Realistic business logic flow
+
+## Technical Specifications
+
+### Technology Stack
+
+- **Framework**: .NET 9.0
+- **Language**: C# with nullable reference types enabled
+- **Dependencies**:
+  - System.Data.SqlClient 4.8.6
+  - Newtonsoft.Json 13.0.3
+
+### Application Output
+
+The application produces deterministic, verifiable output:
+
+``` plaintext
+Order Amount: $148.94 (constant)
+Customer: Lee Gu (lee.gu@example.com)
+Items: Wireless Mouse ($59.98), USB-C Cable ($38.97), Laptop Stand ($49.99)
+Status Flow: Pending → Payment Confirmed → Confirmed → Shipped
+Dynamic Elements: Order ID, Transaction ID, Tracking Number (timestamp/GUID based)
+```
+
+## Learning Objectives
+
+Students who complete this lab will:
+
+1. ✓ Understand common security vulnerabilities in enterprise applications
+2. ✓ Use GitHub Secret Scanning to identify exposed credentials
+3. ✓ Leverage GitHub Copilot to assist with secure code refactoring
+4. ✓ Implement secure configuration management in .NET applications
+5. ✓ Apply security best practices for credential storage
+6. ✓ Validate that security fixes don't break functionality
+
+## Lab Workflow
+
+1. Import the ContosoOrderProcessor repository.
+1. Enable secret scanning and review security alerts on GitHub.
+1. Clone the repository locally and open the project in Visual Studio Code.
+1. Use GitHub Copilot's Ask mode to analyze secret scanning alerts.
+1. Use GitHub Copilot's Agent mode to remediate secret scanning alerts.
+1. Commit and push changes to GitHub.
+1. Enable and test Push Protection.
+
+## Success Criteria
+
+The application is designed to enable clear success verification:
+
+- [ ] Application builds without errors
+- [ ] Application runs and produces expected output
+- [ ] Order amount matches baseline ($148.94)
+- [ ] All workflow steps execute successfully
+- [ ] GitHub Secret Scanning reports fewer alerts
+- [ ] Fewer hard-coded secrets in code files
+- [ ] Configuration loaded from secure sources
+- [ ] Services use dependency injection
+
+## Key Design Decisions
+
+### Why These Specific Vulnerabilities?
+
+1. **Database Connection Strings** - Most common secret exposure
+2. **Payment API Keys** - High-value targets with clear risk
+3. **Email Service Credentials** - Common in enterprise apps
+4. **Cloud Provider Credentials** - Relevant to modern deployments
+5. **JWT/Encryption Keys** - Important for understanding crypto secrets
+
+### Why This Application Structure?
+
+- **Realistic enough** to represent real-world code
+- **Simple enough** to understand quickly
+- **Modular enough** to refactor incrementally
+- **Complex enough** to require thoughtful solutions
+- **Safe enough** with simulated external calls
+
+### Why .NET 9 or later?
+
+- Recent/supported frameworks with modern C# features
+- Strong security tooling support
+- Good GitHub Copilot integration
+- Common in enterprise environments
+- Clear configuration patterns
+
+## Running the Application
+
+### Initial Setup for Refactored Secrets
+
+Since 7 types of secrets have been refactored to use secure configuration, learners need to set up credentials before running the application:
+
+#### Quick Setup: PowerShell Script
+
+A `setup-secrets.ps1` script is provided at the repository root:
+
+```powershell
+. .\setup-secrets.ps1
+cd ContosoOrderProcessor
+dotnet run
+```
+
+The script configures all 6 refactored secrets as environment variables using .NET's hierarchical format (e.g., `Aws__AccessKeyId`, `SendGrid__ApiKey`). Environment variables use double underscores (`__`) to represent hierarchy, which maps to colons (`:`) in configuration keys.
+
+**Important**: The application requires proper configuration and will fail immediately with a clear error message if required environment variables are not set. This teaches learners that production applications should fail fast when configuration is missing rather than silently continuing with empty values.
+
+#### Alternative: Manual Environment Variables
+
+Learners can also manually set environment variables instead of using the script. See README.md for detailed instructions.
+
+#### Production Environments: Azure Key Vault
+
+For production deployments, both `setup-secrets.ps1` and `AppConfig.cs` include comprehensive documentation on using Azure Key Vault instead of environment variables. This provides learners with production-ready guidance for secure secret management.
+
+## Usage Scenarios
+
+### For Training Courses
+
+- Microsoft Learn modules
+- University security courses
+- Corporate security training
+- Conference workshops
+- Bootcamp exercises
+
+### For Self-Study
+
+- Learning GitHub Security features
+- Practicing secure coding
+- Understanding configuration management
+- Exploring GitHub Copilot capabilities
+
+### For Demonstrations
+
+- GitHub Security feature showcases
+- GitHub Copilot effectiveness demos
+- Before/after security comparisons
+- Tool integration examples
+
+## Extension Possibilities
+
+The project can be extended for advanced learning:
+
+1. **Azure Key Vault Integration** - Add cloud secret management
+2. **Pre-commit Hooks** - Prevent secrets from being committed
+3. **CI/CD Pipelines** - Automate security scanning
+4. **Secret Rotation** - Implement key rotation strategies
+5. **Additional Security Issues** - Add SQL injection, XSS examples
+6. **Unit Testing** - Add tests for configuration loading
+7. **Docker Support** - Containerize the application
+8. **API Version** - Convert to ASP.NET Core Web API
+
+## Files
+
+### Code Files
+
+1. `Configuration/AppConfig.cs`
+2. `Models/Customer.cs`
+3. `Models/Order.cs`
+4. `Security/SecurityValidator.cs`
+5. `Services/DatabaseService.cs`
+6. `Services/EmailService.cs`
+7. `Services/PaymentService.cs`
+8. `Program.cs`
+
+### Documentation
+
+1. `README.md` - Enhanced with comprehensive overview and setup instructions
+2. `LAB_GUIDE.md` - Complete student guide (200+ lines)
+3. `INSTRUCTOR_NOTES.md` - Detailed teaching guide (350+ lines)
+4. `EXPOSED_SECRETS_REFERENCE.md` - Vulnerability reference with remediation guidance
+
+## Testing Results
+
+### Build Status
+
+✓ Project builds successfully without errors
+✓ All dependencies resolve correctly
+✓ No compilation warnings
+
+### Runtime Status
+
+✓ Application runs successfully from start to finish
+✓ All services initialize correctly
+✓ Complete workflow executes without exceptions
+✓ Output is consistent and verifiable
+✓ Simulated operations log appropriately
+
+### Security Status (Intentional)
+
+❌ 10 types of secrets are exposed (as designed for training)
+✓ 6 types of secrets refactored to environment variables (demonstrates secure practices)
+✓ Configuration infrastructure in place (IConfiguration with dependency injection)
+❌ GitHub Secret Scanning will detect some (not all) of the exposed secrets
